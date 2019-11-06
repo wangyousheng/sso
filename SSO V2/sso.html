@@ -1,0 +1,76 @@
+<title>SSO首页</title>
+<meta charset="utf-8">
+<h1>sso www.sso.com/sso.html</h1>
+<p>
+    <button onclick="login();" id="login">同步登录</button>
+</p>
+
+<iframe id="loginIframe" style="display:none"></iframe>
+
+<body>
+<script>
+// 同步登录
+function login(){
+	var loginData={userName:'测试兄弟'};
+	//登录
+	//...
+	
+	//登录结果	Data
+    var data=JSON.stringify({
+		status:true,
+		userName:'测试兄弟',
+        msg:'登录成功',
+        token:'sso token'
+    });
+	localStorage.setItem("tokenData",data);
+		
+	//生成子系统iframe,并发送token信息让子系统保存；然后跳转回子系统
+	var referUrl = getQuery("referUrl");
+	var loginIframe = document.getElementById('loginIframe');
+	loginIframe.src=referUrl;
+	document.getElementsByTagName('iframe')[0].contentWindow.postMessage(data,'*');
+	
+	window.location.href=referUrl;
+}
+//获取url参数
+function getQuery(name){
+	var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	var r = window.location.search.substr(1).match(reg);
+	if (r!=null) return unescape(r[2]); return null;
+}
+
+function sleep(delay) {
+  var start = (new Date()).getTime();
+  while ((new Date()).getTime() - start < delay) {
+    continue;
+  }
+}
+//初始化iframe地址（子系统）
+function initLoginIframe(){
+	var referUrl = getQuery("referUrl");
+	var loginIframe = document.getElementById('loginIframe');
+	loginIframe.src=referUrl;
+}
+
+//优先执行	
+initLoginIframe();
+
+window.onload = function() {
+	var data = localStorage.getItem("tokenData");
+	if(!data){
+		return;//第一次登录
+	}
+	var token = JSON.parse(data).token;
+	//去sso服务验证token
+	//...
+	var succss = token ? true : false;
+	
+	//验证成功：生成子系统iframe,并发送token信息让子系统保存；然后跳转回子系统
+	if(succss){
+		document.getElementsByTagName('iframe')[0].contentWindow.postMessage(data,'*');
+		window.location.href=getQuery("referUrl");
+	}
+
+}
+</script>
+</body>

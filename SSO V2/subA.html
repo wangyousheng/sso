@@ -1,0 +1,53 @@
+<title>A首页</title>
+<meta charset="utf-8">
+<h1>A首页 www.a.com:8082</h1>
+<p>
+    <p>用户信息：<span id="userInfo">未登录</span></p>
+</p>
+<script>
+// 去sso登录
+function tologin(){
+	window.location.href="http://www.sso.com/sso.html?referUrl="+window.location.href;
+}
+//登出
+function logout(){
+//todo
+}
+//注册监听 有消息从父级(SSO页面请求)传来时 存贮 tokenData
+window.addEventListener('message',function(e){
+	if(e.source!=window.parent) return;
+	localStorage.setItem("tokenData",e.data);
+	document.getElementById('userInfo').innerHTML =tokenData;
+},false);
+
+//获取父url
+function getParentUrl() { 
+    var url = null;
+    if (parent !== window) { 
+        try {
+           url = parent.location.href; 
+        }catch (e) { 
+           url = document.referrer; 
+        } 
+     }
+     return url;
+ }
+ window.onload = function() {
+ 
+	//判断当前页面是否已经在sso的iframe中；如果是，就不做处理
+	var parentUrl = getParentUrl();
+	if(parentUrl && parentUrl.indexOf("www.sso.com")>1){
+		return;
+	};
+	
+	var tokenData=localStorage.getItem('tokenData');
+	//是否登录
+	if(tokenData){
+		//显示用户信息
+		document.getElementById('userInfo').innerHTML =tokenData;
+	}else{
+		//去sso登录
+		tologin();
+	}	
+}
+</script>

@@ -1,4 +1,4 @@
-# sso
+# sso使用指南
 ## 修改host:
 >127.0.0.1  www.a.com 
 
@@ -15,7 +15,7 @@ window.addEventListener('message',function(e){
 },false);
 ```
 
-## sso
+## sso页面
 ```
 <title>SSO首页</title>
 <meta charset="utf-8">
@@ -56,7 +56,7 @@ function getQuery(name){
 </script>
 ```
 
-## 子系统A
+## 子系统A页面
 ```
 <title>A首页</title>
 <meta charset="utf-8">
@@ -91,7 +91,7 @@ window.addEventListener('message',function(e){
 </script>
 ```
 
-## 子系统B
+## 子系统B页面
 ```
 <title>B首页</title>
 <meta charset="utf-8">
@@ -126,8 +126,10 @@ window.addEventListener('message',function(e){
 }
 </script>
 ```
-## 使用
-* 子系统A进入首页时，提示去sso登录
+## 流程
+* 启动所有系统
+* 进入子系统A首页时，提示去sso登录
 * 点击按钮，进入sso （A系统url会带到sso的url参数上，方便登录后跳回A系统）
-* sso登录，获取到用户信息data，对(子系统列表)iframe发送data；子系统收到data后保存
+* sso登录，获取到用户信息data，对(子系统列表)iframe发送data；子系统监听收到的data后保存
 * 跳回子系统A
+* 进入子系统B首页时，提示已经登录
